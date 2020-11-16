@@ -20,7 +20,7 @@ Currently, a few simulated scenarios are provided to emulate a basic on road obs
 - Generate TSDF layers using `src/generate_tsdf.cpp`
 - Convert the TSDF layers to ESDF using `src/gesdf_from_tsdf.cpp`
 - Visualize the ESDF layers using `src/visualize_esdf_voxels.cpp`
-- Planning - use target `src/planning` to use semantic planner. Provide ESDF layers's path obtained in last step as argument. 
+- Planning - use target `src/planning.cpp` to use semantic planner. Provide ESDF layers's path obtained in last step as argument. 
 
 >**Note** <br>
 >CMake Targets for the above specified programs are provided in the CMakeLists.txt
