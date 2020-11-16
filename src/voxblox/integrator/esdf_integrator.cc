@@ -163,16 +163,14 @@ void EsdfIntegrator::updateFromTsdfBlocks(const BlockIndexList& tsdf_blocks,
         continue;
       }
 
-//      if (tsdf_voxel.color == Color(121, 104, 120)) {
-//        //if (!incremental && config_.add_occupied_crust) {
-//        // Create a little crust of occupied voxels around.
-//        EsdfVoxel& esdf_voxel = esdf_block->getVoxelByLinearIndex(lin_index);
-//        esdf_voxel.distance = config_.default_distance_m;
-//        esdf_voxel.observed = true;
-//        esdf_voxel.hallucinated = true;
-//        esdf_voxel.fixed = false;
-//        continue;
-//      }
+      if (config_.semantic_masking && config_.mask == tsdf_voxel.color ) {
+        EsdfVoxel& esdf_voxel = esdf_block->getVoxelByLinearIndex(lin_index);
+        esdf_voxel.distance = config_.default_distance_m;
+        esdf_voxel.observed = true;
+        esdf_voxel.hallucinated = true;
+        esdf_voxel.fixed = false;
+        continue;
+      }
 
       EsdfVoxel& esdf_voxel = esdf_block->getVoxelByLinearIndex(lin_index);
       VoxelIndex voxel_index =

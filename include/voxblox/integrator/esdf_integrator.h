@@ -61,6 +61,13 @@ class EsdfIntegrator {
      * distances.
      */
     bool multi_queue = false;
+
+    /**
+    * Whether to mask esdf values for a semantic class.
+    */
+    bool semantic_masking = false;
+
+    Color mask;
     /**
      * Whether to add an outside layer of occupied voxels. Basically just sets
      * all unknown voxels in the allocated blocks to occupied.

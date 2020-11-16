@@ -2,8 +2,8 @@
 // Created by mansoor on 19.10.20.
 //
 
-#ifndef VOXBLOX_TEST_POSE_H
-#define VOXBLOX_TEST_POSE_H
+#ifndef TRAJECTORY_PLANNER_POSE_H
+#define TRAJECTORY_PLANNER_POSE_H
 struct Pose
 {
     double x;
@@ -14,4 +14,4 @@ struct Pose
     double pitch;
     double roll;
 };
-#endif //VOXBLOX_TEST_POSE_H
+#endif //TRAJECTORY_PLANNER_POSE_H

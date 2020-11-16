@@ -1,5 +1,5 @@
-#ifndef VOXBLOX_TEST_LAYER_TEST_UTILS_H_
-#define VOXBLOX_TEST_LAYER_TEST_UTILS_H_
+#ifndef TRAJECTORY_PLANNER_LAYER_TEST_UTILS_H_
+#define TRAJECTORY_PLANNER_LAYER_TEST_UTILS_H_
 
 #include <gtest/gtest.h>
 
@@ -220,4 +220,4 @@ inline void fillVoxelWithTestData(size_t x, size_t y, size_t z,
 }  // namespace test
 }  // namespace voxblox
 
-#endif  // VOXBLOX_TEST_LAYER_TEST_UTILS_H_
+#endif  // TRAJECTORY_PLANNER_LAYER_TEST_UTILS_H_

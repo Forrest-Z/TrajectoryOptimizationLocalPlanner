@@ -4,6 +4,35 @@
 
 #include "scenes/BaseScene.h"
 
+scenes::BaseScene::BaseScene() : min_bound_(-5.0, -5.0, -1.0),
+                                 max_bound_(5.0, 5.0, 6.0),
+                                 voxels_per_side_(16),
+                                 voxel_size_(0.10),
+                                 fov_h_rad_(2.61799),
+                                 max_dist_(10.0),
+                                 sensor_noise_(0.0),
+                                 generated_(false),
+                                 depth_camera_resolution_(Eigen::Vector2i(320, 240)) {
+    reset();
+}
+
+scenes::BaseScene::BaseScene(const Point min_bound, const Point max_bound,
+                             const size_t voxels_per_side, const FloatingPoint voxel_size,
+                             const FloatingPoint fov_h_rad, const FloatingPoint max_dist,
+                             const FloatingPoint sensor_noise, const Eigen::Vector2i depth_camera_resolution) :
+        min_bound_(min_bound),
+        max_bound_(max_bound),
+        voxels_per_side_(voxels_per_side),
+        voxel_size_(voxel_size),
+        fov_h_rad_(fov_h_rad),
+        max_dist_(max_dist),
+        sensor_noise_(sensor_noise),
+        depth_camera_resolution_(depth_camera_resolution),
+        generated_(false) {
+
+    reset();
+}
+
 void scenes::BaseScene::reset() {
     world_.clear();
     world_.setBounds(min_bound_, max_bound_);
@@ -20,6 +49,18 @@ void scenes::BaseScene::reset() {
     drivable_zone_integrator_.reset(new SimpleTsdfIntegrator(tsdf_layer_config_, drivable_zone_layer_.get()));
 
     generated_ = false;
+}
+
+const std::shared_ptr<Layer<TsdfVoxel>> &scenes::BaseScene::getObstaclesLayer() const {
+    return obstacles_layer_;
+}
+
+const std::shared_ptr<Layer<TsdfVoxel>> &scenes::BaseScene::getDrivableZoneLayer() const {
+    return drivable_zone_layer_;
+}
+
+FloatingPoint scenes::BaseScene::getVoxelSize() const {
+    return voxel_size_;
 }
 
 void scenes::BaseScene::setupScene() {
@@ -78,17 +119,17 @@ void scenes::BaseScene::setupScene() {
     generated_ = true;
 }
 
-void scenes::BaseScene::saveSceneVoxelPointcloud(const std::string obstacles_layer,
-                                                 const std::string drivable_zone_layer) const {
+void scenes::BaseScene::saveSceneTSDF(const std::string obstacles_layer_path,
+                                                 const std::string drivable_zone_layer_path) const {
     if (!generated_)
-        throw ("TSDF not generated yet!");
+        throw std::runtime_error("TSDF not generated yet!");
 
-    if (!obstacles_layer.empty()) {
-        voxblox::io::SaveLayer(*obstacles_layer_, "/home/mansoor/tsdf_obstacles_layer.layer");
+    if (!obstacles_layer_path.empty()) {
+        voxblox::io::SaveLayer(*obstacles_layer_, obstacles_layer_path);
     }
 
-    if (!drivable_zone_layer.empty()) {
-        voxblox::io::SaveLayer(*drivable_zone_layer_, "/home/mansoor/tsdf_free_layer.layer");
+    if (!drivable_zone_layer_path.empty()) {
+        voxblox::io::SaveLayer(*drivable_zone_layer_, drivable_zone_layer_path);
     }
 }
 

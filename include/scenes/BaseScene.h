@@ -2,8 +2,8 @@
 // Created by mansoor on 13.11.20.
 //
 
-#ifndef VOXBLOX_TEST_BASESCENE_H
-#define VOXBLOX_TEST_BASESCENE_H
+#ifndef TRAJECTORY_PLANNER_BASESCENE_H
+#define TRAJECTORY_PLANNER_BASESCENE_H
 
 #include <iostream>
 #include "voxblox/core/layer.h"
@@ -22,65 +22,67 @@ using namespace voxblox;
 #define DEBUG_SCENE 1
 
 namespace scenes{
+    /**
+     * Provides a base Implementation of a Scenario simulating a
+     * scene.
+     * Generates point cloud for the scene along with the pose and
+     * uses it to construct TSDF.
+     * @author Mansoor Nasir
+     */
     class BaseScene {
     public:
 
         BaseScene(const Point min_bound, const Point max_bound,
                   const size_t voxels_per_side, const FloatingPoint voxel_size,
                   const FloatingPoint fov_h_rad, const FloatingPoint max_dist,
-                  const FloatingPoint sensor_noise, const Eigen::Vector2i depth_camera_resolution) :
-                min_bound_(min_bound),
-                max_bound_(max_bound),
-                voxels_per_side_(voxels_per_side),
-                voxel_size_(voxel_size),
-                fov_h_rad_(fov_h_rad),
-                max_dist_(max_dist),
-                sensor_noise_(sensor_noise),
-                depth_camera_resolution_(depth_camera_resolution),
-                generated_(false) {
+                  const FloatingPoint sensor_noise, const Eigen::Vector2i depth_camera_resolution);
 
-            reset();
-        }
+        BaseScene();
 
-        BaseScene() : min_bound_(-5.0, -5.0, -1.0),
-                      max_bound_(5.0, 5.0, 6.0),
-                      voxels_per_side_(16),
-                      voxel_size_(0.10),
-                      fov_h_rad_(2.61799),
-                      max_dist_(10.0),
-                      sensor_noise_(0.0),
-                      generated_(false),
-                      depth_camera_resolution_(Eigen::Vector2i(320, 240)) {
-            reset();
-        }
-
+        /**
+         * Resets the TSDF Layers
+         */
         void reset();
 
-        const std::shared_ptr<Layer<TsdfVoxel>> &getObstaclesLayer() const {
-            return obstacles_layer_;
-        }
+        /**
+         * Get TSDF layer for obstacles
+         */
+        const std::shared_ptr<Layer<TsdfVoxel>> &getObstaclesLayer() const;
 
-        const std::shared_ptr<Layer<TsdfVoxel>> &getDrivableZoneLayer() const {
-            return drivable_zone_layer_;
-        }
+        /**
+         * Get TSDF layer for drivable zone.
+         */
+        const std::shared_ptr<Layer<TsdfVoxel>> &getDrivableZoneLayer() const;
+        FloatingPoint getVoxelSize() const;
 
-        FloatingPoint getVoxelSize() const {
-            return voxel_size_;
-        }
+        /**
+         * Generate a point cloud from camera path returned by getPoses() and
+         * integrates to point cloud to obstacle and driving zone TSDF grids.
+         */
 
         void setupScene();
 
-        void saveSceneVoxelPointcloud(const std::string obstacles_layer,
+        /**
+         * Save the TSDF layers to file.
+         */
+        void saveSceneTSDF(const std::string obstacles_layer,
                                                          const std::string drivable_zone_layer) const;
 
     private:
+        /**
+         *  A basic implementation of camera motion in a scene. The camera scans
+         *  the scene along the straing path fron start with increment inc for
+         *  num_poses and provides the camera parameters for each pose.
+         */
         void getPoses(AlignedVector<Transformation> *poses,
-                      const Point &start = Point(-13., -1, 3),
+                      const Point &start = Point(-13., 0, 3),
                       const Point &inc = Point(1, 0, 0),
                       std::size_t num_poses = 20);
 
     protected:
-        // whether this point belong to drivable surface semantic category
+        /**
+         *  whether this point belong to drivable surface semantic category
+         */
         virtual bool isDrivable(const Point &p, const Color &c) = 0;
 
     protected:
@@ -90,7 +92,6 @@ namespace scenes{
         Point max_bound_;
         FloatingPoint voxel_size_;
         size_t voxels_per_side_;
-        //AlignedVector<Transformation> poses_;
         Color drivableZone_;
 
         //config
@@ -116,4 +117,4 @@ namespace scenes{
 }
 
 
-#endif //VOXBLOX_TEST_BASESCENE_H
+#endif //TRAJECTORY_PLANNER_BASESCENE_H

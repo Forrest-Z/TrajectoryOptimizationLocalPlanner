@@ -46,17 +46,18 @@ set("${PROJECT_NAME}_SRCS"
         src/mav_trajectory_generation/vertex.cpp
         src/scenes/BaseScene.cpp
         src/scenes/SimpleScene.cpp
-        src/semantic_planner/SemanticPlanner.cpp
+        src/scenes/MultiObstacleScene.cpp
+        src/scenes/SlopedScene.cpp
         )
 
 set(PROTO_DEFNS proto/voxblox/Block.proto proto/voxblox/Layer.proto)
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTO_DEFNS})
 
 add_library(${PROJECT_NAME}_proto ${PROTO_SRCS} ${PROTO_HDRS})
-add_executable(generate_tsdf generate_tsdf.cpp ${${PROJECT_NAME}_SRCS})
-add_executable(visualize_esdf_voxels visualize_esdf_voxels.cpp ${${PROJECT_NAME}_SRCS})
-add_executable(esdf_from_tsdf esdf_from_tsdf.cpp ${${PROJECT_NAME}_SRCS})
-add_executable(planning planner.cpp ${${PROJECT_NAME}_SRCS})
+add_executable(generate_tsdf src/generate_tsdf.cpp ${${PROJECT_NAME}_SRCS})
+add_executable(visualize_esdf_voxels src/visualize_esdf_voxels.cpp ${${PROJECT_NAME}_SRCS})
+add_executable(esdf_from_tsdf src/esdf_from_tsdf.cpp ${${PROJECT_NAME}_SRCS})
+add_executable(planning src/planner.cpp src/semantic_planner/SemanticPlanner.cpp ${${PROJECT_NAME}_SRCS})
 
 target_link_libraries(generate_tsdf Eigen3::Eigen glog::glog protobuf::libprotobuf ${PROJECT_NAME}_proto)
 target_link_libraries(visualize_esdf_voxels Eigen3::Eigen glog::glog protobuf::libprotobuf ${PROJECT_NAME}_proto ${CERES_LIBRARIES})

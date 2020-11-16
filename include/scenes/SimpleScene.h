@@ -2,14 +2,36 @@
 // Created by mansoor on 13.11.20.
 //
 
-#ifndef VOXBLOX_TEST_SIMPLESCENE_H
-#define VOXBLOX_TEST_SIMPLESCENE_H
+#ifndef TRAJECTORY_PLANNER_SIMPLESCENE_H
+#define TRAJECTORY_PLANNER_SIMPLESCENE_H
 
 #include "BaseScene.h"
 
 namespace scenes {
-class SimpleScene : public scenes::BaseScene {
+    /**
+     * A simple scenrio of a single cylindrical obstacle
+     * in the middle of road.
+     *
+     * ++++++++++++++++++++++++++++++++++++++++++
+     *
+     *                  ___________
+     *                 /           \
+     * start >--------/    ++       \-----> goal
+     *                   +    +
+     *                   +    +
+     *                     ++
+     *
+     * +++++++++++++++++++++++++++++++++++++++++++
+     * @author Mansoor Nasir
+     */
+    class SimpleScene : public scenes::BaseScene {
     public:
+        SimpleScene();
+
+        SimpleScene(const Point &obstacle_center,
+                    const FloatingPoint obstacle_radius,
+                    const FloatingPoint obstacle_height);
+
         SimpleScene(const Point &obstacle_center,
                     const FloatingPoint obstacle_radius,
                     const FloatingPoint obstacle_height,
@@ -22,50 +44,24 @@ class SimpleScene : public scenes::BaseScene {
                     const FloatingPoint fov_h_rad,
                     const FloatingPoint max_dist,
                     const FloatingPoint sensor_noise,
-                    const Eigen::Vector2i depth_camera_resolution)
-                : obstacle_center_(obstacle_center),
-                  obstacle_radius_(obstacle_radius),
-                  obstacle_height_(obstacle_height),
-                  road_center_(road_center),
-                  road_size_(road_size),
-                  road_color_(road_color),
-                  BaseScene(min_bound,
-                            max_bound,
-                            voxels_per_side,
-                            voxel_size,
-                            fov_h_rad,
-                            max_dist,
-                            sensor_noise,
-                            depth_camera_resolution) {
-            _setupObjects();
-        }
+                    const Eigen::Vector2i depth_camera_resolution);
 
-        SimpleScene()
-                : obstacle_center_(0.0, 0.0, 0.0),
-                  obstacle_radius_(1),
-                  obstacle_height_(3),
-                  road_center_(0.0, 0.0, 0.0),
-                  road_size_(30.0, 8.0, 0.2),
-                  road_color_(121, 104, 120),
-                  BaseScene() {
-            _setupObjects();
-        }
 
     protected:
-        virtual bool isDrivable(const Point &p, const Color &c) {
-            return c == road_color_;
-        }
+        virtual bool isDrivable(const Point &p, const Color &c);
 
     private:
         void _setupObjects();
 
+     //member variables
+    protected:
+        Color road_color_;
     private:
         Point obstacle_center_;
         FloatingPoint obstacle_radius_;
         FloatingPoint obstacle_height_;
         Point road_center_;
         Point road_size_;
-        Color road_color_;
     };
 }
-#endif //VOXBLOX_TEST_SIMPLESCENE_H
+#endif //TRAJECTORY_PLANNER_SIMPLESCENE_H
