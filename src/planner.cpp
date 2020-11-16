@@ -11,8 +11,8 @@ int main(int argc, char *argv[]) {
     }
     // initialize start and goal positions
     std::vector<Eigen::VectorXd> waypoints;
-    Eigen::Vector3d start(-7., 0.5, 0.3); //initialize depending upon scenario
-    Eigen::Vector3d goal(7, -0.5, 0.3); //initialize depending upon scenario
+    Eigen::Vector3d start(-9., 1.f, 0.3); //initialize depending upon scenario
+    Eigen::Vector3d goal(7, -1.f, 0.3); //initialize depending upon scenario
 
     // planner
     semantic_planner::SemanticPlanner planner(argv[1], argv[2]);
