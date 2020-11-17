@@ -67,7 +67,13 @@ class EsdfIntegrator {
     */
     bool semantic_masking = false;
 
-    Color mask;
+    /**
+     * Semantic color to filter esdf values for. Required to mask
+     * drivable area from collision distances. todo - get from scenario that was used to generat esdf but it
+     * additional dependency of esdf converter with scenario which it should care about.
+     */
+    Color mask = Color(121, 104, 120);
+
     /**
      * Whether to add an outside layer of occupied voxels. Basically just sets
      * all unknown voxels in the allocated blocks to occupied.

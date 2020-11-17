@@ -28,10 +28,6 @@ int main(int argc, char *argv[]) {
     // esdf integration config
     EsdfIntegrator::Config esdf_integrator_config;
     esdf_integrator_config.semantic_masking = std::stoi(argv[3]);
-    // mask drivable area from collision distances. todo - get from scenario that was used to generat esdf but it
-    // additional dependency of esdf converter with scenario which it should care about. pass as argument? too many
-    // arguments. see later!
-    esdf_integrator_config.mask = Color(121, 104, 120);
     EsdfMap esdf_map(esdf_config);
     EsdfIntegrator esdf_integrator(esdf_integrator_config,
                                    layer_from_file.get(),
