@@ -120,7 +120,7 @@ int main(int argc, char **argv) {
     Colors colors;
 
     std::string esdf_path(argv[1]);
-    std::string pointcloud_path = esdf_path.substr(0, esdf_path.find('.')) + "_pointcloud.txt";
+    std::string pointcloud_path = esdf_path.substr(0, esdf_path.find(".layer")) + "_pointcloud.txt";
 
     // load esdf layer
     io::LoadLayer<EsdfVoxel>(esdf_path, &layer_from_file);

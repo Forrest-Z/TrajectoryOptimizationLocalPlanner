@@ -6,6 +6,7 @@
 #include "scenes/BaseScene.h"
 
 int main(int argc, char *argv[]) {
+
     if (argc < 5) {
         std::cout << "Usage: generate_tsdf <scene> <output_obstacles_layer> <output_drivable_layer> <output_pointcloud>";
         std::cout << "scene - Scenario for mapping. Choose from [simple, multi, slope]" << std::endl;

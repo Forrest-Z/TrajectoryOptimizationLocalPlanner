@@ -10,7 +10,7 @@ using namespace voxblox;
 int main(int argc, char *argv[]) {
 
     if (argc < 4) {
-        std::cout << "Usage: esdf_from_tsdf <input_layer> <output_layer> <mask>";
+        std::cout << "Usage: esdf_from_tsdf <input_layer> <output_layer> <category>";
         std::cout << "input_layer - Path to load the input TSDF layer" << std::endl;
         std::cout << "output_drivable_layer - Path to save the ESDF layer" << std::endl;
         std::cout << "category - Category of the ESDF map. Choose fro [obstacles, free]" << std::endl;

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libtrajectory_planner_proto.a  CMakeFiles/trajectory_planner_proto.dir/Block.pb.cc.o CMakeFiles/trajectory_planner_proto.dir/Layer.pb.cc.o
+/usr/bin/ranlib libtrajectory_planner_proto.a

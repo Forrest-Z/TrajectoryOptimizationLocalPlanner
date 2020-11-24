@@ -166,7 +166,12 @@ void scenes::BaseScene::getPoses(AlignedVector<Transformation> *poses,
         FloatingPoint desired_yaw = 0.0;
         if (std::abs(facing_direction.x()) > 1e-4 ||
             std::abs(facing_direction.y()) > 1e-4) {
-            desired_yaw = atan2(facing_direction.y(), facing_direction.x());
+            // camera view in both front and rear direction
+            if (i % 2 == 0) {
+                desired_yaw = atan2(facing_direction.y(), facing_direction.x());
+            } else {
+                desired_yaw = atan2(facing_direction.y(), -facing_direction.x());
+            }
         }
         // Face the desired yaw and pitch forward a bit to get some of the fl/oor.
         Quaternion rotation = Quaternion(Eigen::AngleAxis<FloatingPoint>(-0.1, Point::UnitY())) *

@@ -40,7 +40,8 @@ scenes::SimpleScene::SimpleScene(const Point &obstacle_center,
                                  const FloatingPoint fov_h_rad,
                                  const FloatingPoint max_dist,
                                  const FloatingPoint sensor_noise,
-                                 const Eigen::Vector2i depth_camera_resolution)
+                                 const Eigen::Vector2i depth_camera_resolution,
+                                 const std::string pointcloud_filename)
         : obstacle_center_(obstacle_center),
           obstacle_radius_(obstacle_radius),
           obstacle_height_(obstacle_height),
@@ -54,7 +55,7 @@ scenes::SimpleScene::SimpleScene(const Point &obstacle_center,
                     fov_h_rad,
                     max_dist,
                     sensor_noise,
-                    depth_camera_resolution) {
+                    depth_camera_resolution, pointcloud_filename) {
     _setupObjects();
 }
 

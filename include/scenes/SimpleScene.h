@@ -44,7 +44,7 @@ namespace scenes {
                     const FloatingPoint fov_h_rad,
                     const FloatingPoint max_dist,
                     const FloatingPoint sensor_noise,
-                    const Eigen::Vector2i depth_camera_resolution);
+                    const Eigen::Vector2i depth_camera_resolution, const std::string pointcloud_filename);
 
 
     protected:
