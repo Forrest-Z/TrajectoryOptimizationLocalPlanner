@@ -12,14 +12,30 @@ scenes::BaseScene::BaseScene() : min_bound_(-5.0, -5.0, -1.0),
                                  max_dist_(10.0),
                                  sensor_noise_(0.0),
                                  generated_(false),
+                                 pointcloud_filename_("pointcloud.txt"),
                                  depth_camera_resolution_(Eigen::Vector2i(320, 240)) {
+    reset();
+}
+
+scenes::BaseScene::BaseScene(const std::string pointcloud_filename) : min_bound_(-5.0, -5.0, -1.0),
+                                                                      max_bound_(5.0, 5.0, 6.0),
+                                                                      voxels_per_side_(16),
+                                                                      voxel_size_(0.10),
+                                                                      fov_h_rad_(2.61799),
+                                                                      max_dist_(10.0),
+                                                                      sensor_noise_(0.0),
+                                                                      generated_(false),
+                                                                      pointcloud_filename_(pointcloud_filename),
+                                                                      depth_camera_resolution_(
+                                                                              Eigen::Vector2i(320, 240)) {
     reset();
 }
 
 scenes::BaseScene::BaseScene(const Point min_bound, const Point max_bound,
                              const size_t voxels_per_side, const FloatingPoint voxel_size,
                              const FloatingPoint fov_h_rad, const FloatingPoint max_dist,
-                             const FloatingPoint sensor_noise, const Eigen::Vector2i depth_camera_resolution) :
+                             const FloatingPoint sensor_noise, const Eigen::Vector2i depth_camera_resolution,
+                             const std::string pointcloud_filename) :
         min_bound_(min_bound),
         max_bound_(max_bound),
         voxels_per_side_(voxels_per_side),
@@ -28,7 +44,7 @@ scenes::BaseScene::BaseScene(const Point min_bound, const Point max_bound,
         max_dist_(max_dist),
         sensor_noise_(sensor_noise),
         depth_camera_resolution_(depth_camera_resolution),
-        generated_(false) {
+        generated_(false), pointcloud_filename_(pointcloud_filename) {
 
     reset();
 }
@@ -70,7 +86,7 @@ void scenes::BaseScene::setupScene() {
 
 #ifdef DEBUG_SCENE
     std::ofstream pointcloud_file;
-    pointcloud_file.open("/home/mansoor/pointcloud.txt");
+    pointcloud_file.open(pointcloud_filename_);
 #endif
 
     for (size_t i = 0; i < poses.size(); i++) {
@@ -120,7 +136,7 @@ void scenes::BaseScene::setupScene() {
 }
 
 void scenes::BaseScene::saveSceneTSDF(const std::string obstacles_layer_path,
-                                                 const std::string drivable_zone_layer_path) const {
+                                      const std::string drivable_zone_layer_path) const {
     if (!generated_)
         throw std::runtime_error("TSDF not generated yet!");
 
@@ -158,4 +174,8 @@ void scenes::BaseScene::getPoses(AlignedVector<Transformation> *poses,
 
         poses->emplace_back(Transformation(rotation, position));
     }
+}
+
+void scenes::BaseScene::setPointcloudFilename(const std::string &pointcloudFilename) {
+    pointcloud_filename_ = pointcloudFilename;
 }

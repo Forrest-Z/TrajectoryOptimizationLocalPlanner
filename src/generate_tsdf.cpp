@@ -6,10 +6,11 @@
 #include "scenes/BaseScene.h"
 
 int main(int argc, char *argv[]) {
-    if (argc < 4) {
-        std::cout << "Usage: generate_tsdf <scene> <output_obstacles_layer> <output_drivable_layer>";
+    if (argc < 5) {
+        std::cout << "Usage: generate_tsdf <scene> <output_obstacles_layer> <output_drivable_layer> <output_pointcloud>";
         std::cout << "scene - Scenario for mapping. Choose from [simple, multi, slope]" << std::endl;
         std::cout << "output_drivable_layer - Path to load the TSDF layer for driving zone" << std::endl;
+        std::cout << "output_pointcloud - Path to save the coloured point cloud as txt file as [XYZRGB]" << std::endl;
         return -1;
     }
     scenes::BaseScene *scene;
@@ -23,6 +24,7 @@ int main(int argc, char *argv[]) {
     } else {
         throw std::runtime_error("Invalid scenario specified!");
     }
+    scene->setPointcloudFilename(argv[4]);
     scene->setupScene();
     scene->saveSceneTSDF(argv[2], argv[3]);
 

@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
         std::cout << "Usage: esdf_from_tsdf <input_layer> <output_layer> <mask>";
         std::cout << "input_layer - Path to load the input TSDF layer" << std::endl;
         std::cout << "output_drivable_layer - Path to save the ESDF layer" << std::endl;
-        std::cout << "mask - Mask a semantic class in the esdf map. [0,1]" << std::endl;
+        std::cout << "category - Category of the ESDF map. Choose fro [obstacles, free]" << std::endl;
         return -1;
     }
 
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 
     // esdf integration config
     EsdfIntegrator::Config esdf_integrator_config;
-    esdf_integrator_config.semantic_masking = std::stoi(argv[3]);
+    esdf_integrator_config.semantic_masking = strcmp(argv[3], "obstacles") == 0;
     EsdfMap esdf_map(esdf_config);
     EsdfIntegrator esdf_integrator(esdf_integrator_config,
                                    layer_from_file.get(),

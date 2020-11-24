@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 project(trajectory_planner)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_BUILD_TYPE Release)
+
 find_package(Eigen3 REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(glog REQUIRED)
@@ -13,7 +15,7 @@ include_directories(${EIGEN3_INCLUDE_DIR} ${GLOG_INCLUDE_DIR})
 include_directories(${PROTOBUF_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-set("${PROJECT_NAME}_SRCS"
+set(MAPPING_SRCS
         src/voxblox/alignment/icp.cc
         src/voxblox/core/block.cc
         src/voxblox/core/esdf_map.cc
@@ -35,6 +37,9 @@ set("${PROJECT_NAME}_SRCS"
         src/voxblox/utils/protobuf_utils.cc
         src/voxblox/utils/timing.cc
         src/voxblox/utils/voxel_utils.cc
+        )
+
+set(PLANNING_SRCS
         src/loco_planner/loco_main.cpp
         src/mav_trajectory_generation/motion_defines.cpp
         src/mav_trajectory_generation/polynomial.cpp
@@ -44,6 +49,11 @@ set("${PROJECT_NAME}_SRCS"
         src/mav_trajectory_generation/timing.cpp
         src/mav_trajectory_generation/trajectory.cpp
         src/mav_trajectory_generation/vertex.cpp
+        src/semantic_planner/SemanticPlanner.cpp
+        src/planner.cpp
+        )
+
+set(SCENES_SRCS
         src/scenes/BaseScene.cpp
         src/scenes/SimpleScene.cpp
         src/scenes/MultiObstacleScene.cpp
@@ -53,13 +63,25 @@ set("${PROJECT_NAME}_SRCS"
 set(PROTO_DEFNS proto/voxblox/Block.proto proto/voxblox/Layer.proto)
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTO_DEFNS})
 
-add_library(${PROJECT_NAME}_proto ${PROTO_SRCS} ${PROTO_HDRS})
-add_executable(generate_tsdf src/generate_tsdf.cpp ${${PROJECT_NAME}_SRCS})
-add_executable(visualize_esdf_voxels src/visualize_esdf_voxels.cpp ${${PROJECT_NAME}_SRCS})
-add_executable(esdf_from_tsdf src/esdf_from_tsdf.cpp ${${PROJECT_NAME}_SRCS})
-add_executable(planning src/planner.cpp src/semantic_planner/SemanticPlanner.cpp ${${PROJECT_NAME}_SRCS})
+# define libraries for mapping, planning and scenes
+add_library(${PROJECT_NAME}_proto  ${PROTO_SRCS} ${PROTO_HDRS})
+add_library(${PROJECT_NAME}_mapping  ${MAPPING_SRCS})
+add_library(${PROJECT_NAME}_planning  ${PLANNING_SRCS})
+add_library(${PROJECT_NAME}_scenes  ${SCENES_SRCS} )
 
-target_link_libraries(generate_tsdf Eigen3::Eigen glog::glog protobuf::libprotobuf ${PROJECT_NAME}_proto)
-target_link_libraries(visualize_esdf_voxels Eigen3::Eigen glog::glog protobuf::libprotobuf ${PROJECT_NAME}_proto ${CERES_LIBRARIES})
-target_link_libraries(planning Eigen3::Eigen glog::glog protobuf::libprotobuf  ${PROJECT_NAME}_proto ${CERES_LIBRARIES} "stdc++fs")
-target_link_libraries(esdf_from_tsdf Eigen3::Eigen glog::glog protobuf::libprotobuf ${PROJECT_NAME}_proto)
+# define executables
+add_executable(generate_tsdf src/generate_tsdf.cpp)
+add_executable(visualize_esdf_voxels src/visualize_esdf_voxels.cpp)
+add_executable(esdf_from_tsdf src/esdf_from_tsdf.cpp)
+add_executable(planning src/planner.cpp)
+
+# link mapping and planning libraries to its dependencies eigen, ceres etcs
+target_link_libraries(${PROJECT_NAME}_mapping Eigen3::Eigen glog::glog protobuf::libprotobuf ${PROJECT_NAME}_proto )
+target_link_libraries(${PROJECT_NAME}_scenes ${PROJECT_NAME}_mapping )
+target_link_libraries(${PROJECT_NAME}_planning ${PROJECT_NAME}_mapping ${CERES_LIBRARIES} "stdc++fs" )
+
+# link executables to mapping and planning libraries
+target_link_libraries(generate_tsdf ${PROJECT_NAME}_scenes)
+target_link_libraries(visualize_esdf_voxels ${PROJECT_NAME}_mapping )
+target_link_libraries(planning "stdc++fs" ${PROJECT_NAME}_planning )
+target_link_libraries(esdf_from_tsdf ${PROJECT_NAME}_mapping)

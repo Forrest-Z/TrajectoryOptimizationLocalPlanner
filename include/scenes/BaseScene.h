@@ -17,11 +17,12 @@
 
 #include <iostream>
 #include <fstream>
+
 using namespace voxblox;
 
 #define DEBUG_SCENE 1
 
-namespace scenes{
+namespace scenes {
     /**
      * Provides a base Implementation of a Scenario simulating a
      * scene.
@@ -32,10 +33,14 @@ namespace scenes{
     class BaseScene {
     public:
 
+        BaseScene(const std::string pointcloud_filename);
+
         BaseScene(const Point min_bound, const Point max_bound,
                   const size_t voxels_per_side, const FloatingPoint voxel_size,
                   const FloatingPoint fov_h_rad, const FloatingPoint max_dist,
-                  const FloatingPoint sensor_noise, const Eigen::Vector2i depth_camera_resolution);
+                  const FloatingPoint sensor_noise, const Eigen::Vector2i depth_camera_resolution,
+                  const std::string pointcloud_filename);
+
 
         BaseScene();
 
@@ -53,6 +58,7 @@ namespace scenes{
          * Get TSDF layer for drivable zone.
          */
         const std::shared_ptr<Layer<TsdfVoxel>> &getDrivableZoneLayer() const;
+
         FloatingPoint getVoxelSize() const;
 
         /**
@@ -66,7 +72,13 @@ namespace scenes{
          * Save the TSDF layers to file.
          */
         void saveSceneTSDF(const std::string obstacles_layer,
-                                                         const std::string drivable_zone_layer) const;
+                           const std::string drivable_zone_layer) const;
+
+        /**
+         *
+         * @param pointcloudFilename File path to save the output pointcloud
+         */
+        void setPointcloudFilename(const std::string &pointcloudFilename);
 
     private:
         /**
@@ -93,6 +105,9 @@ namespace scenes{
         FloatingPoint voxel_size_;
         size_t voxels_per_side_;
         Color drivableZone_;
+        std::string pointcloud_filename_;
+
+    protected:
 
         //config
         TsdfIntegratorBase::Config tsdf_layer_config_;

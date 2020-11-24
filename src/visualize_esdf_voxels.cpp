@@ -77,7 +77,7 @@ void createColorPointcloudFromLayer(
         for (size_t linear_index = 0; linear_index < num_voxels_per_block;
              ++linear_index) {
             Point coord = block.computeCoordinatesFromLinearIndex(linear_index);
-            if (category.compare("obstacles") != 0) {
+            if (category.compare("obstacles") == 0) {
                 if (visualizeVoxelsObstacles(block.getVoxelByLinearIndex(linear_index), &color)) {
                     ptcloud->push_back(coord);
                     colors->push_back(color);
@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
     if (argc < 3) {
         std::cerr << "Usage: visualzie_esdf_voxels <input_layer_path> <layer_category>";
         std::cout<<"output_drivable_layer - Path to load the ESDF layer for visualization"<<std::endl;
-        std::cout<<"layer_category - Layer class. [Obstacles layer or Driving zone layer] "<<std::endl;
+        std::cout<<"layer_category - Layer class. Obstacles layer or Driving zone layer. Options: [obstacles,free]"<<std::endl;
         return -1;
     }
 
