@@ -1,3 +1,0 @@
-# Hashes of file build rules.
-d3b15104a2e76832edea84c72bab151d Block.pb.h
-0c416976f4fefcddaaadd07e2c6bec0e Layer.pb.h
