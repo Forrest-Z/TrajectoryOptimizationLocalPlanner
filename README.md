@@ -72,11 +72,24 @@ similarly for drivable zone use :
 `visualzie_esdf_voxels esdf_obstacle_layer.layer obstacles`  
 <br>  
 >**Note** <br>  
->A colored pointcloud (XYZRGB) with voxel centers would be saved as layer_name_pointcloud.txt (e.g esdf_obstacles_layer_pointcloud.txt) .  
+>A colored pointcloud (XYZRGB) with voxel centers would be saved as layer_name_pointcloud.txt (e.g esdf_obstacles_layer_pointcloud.txt) .  You may use Meshlab to view the point cloud. Select the XYZRGB formation when importing the file as mesh.
   
   
 #### Planning  
 After constructing ESDF maps for both obstacles and drivable space, we can use the distance information in the map to calculate potential fields indicating collision and road surface deviation costs and solve the optimization problem to find the trajectory polynomial minimizing these costs.  
+
+Usage: `semantic_planner <start> <goal> <obstacles_layer_path> <drivable_layer_path> <pointcloud_path>`
+
+**start** Start position as 3D comma separated value
+**goal** Goal Positionn as 3D comma separated value
+**obstacles_layer_path** ESDF map path generated using `esdf_from_tsdf` program. Used to get distance to obstacles along the prospective paths .
+**drivable_layer_path** ESDF map path generated using `esdf_from_tsdf` program for free space. 
+**pointcloud_path** Pointcloud path over which the planned path is highlighted
+
+For example: `semantic_planner 0.0,0.0,0.0 5.0,5.,6.0 esdf_obstacle_layer.layer esdf_freer.layer pointcloud.txt` 
+
+#### Output
+Saved the planned path as colored pointcloud [XYZRGB] with highlighted planned path at the location provided as argument.
   
 ## Scripts (For Linux)  
 Below you can find scripts to build and perform all the steps define in the above manual steps.  
@@ -85,7 +98,7 @@ A script to compile the code using CMake is provided in scripts directory.
 `bash scripts/compile.sh`  
 ### Execution  
 Scripts are also provided for each scenario to automate the complete process and save the results in output folder(contents described in the following section). The planned path (highlighted over scene) is saved as colored point cloud [XYZRGB format] in the output directory along with ESDF colored pointclouds for both obstacles and drivable zone .   
-<br>  
+  
 `bash scripts/simple-scenario.sh`  
 `bash scripts/multi-scenario.sh`
 `bash scripts/slope-scenario.sh`  
@@ -132,6 +145,7 @@ The mapping is based on implementation from [Voxblox](https://github.com/ethz-as
 
 Helen Oleynikova, Zachary Taylor, Marius Fehr, Juan Nieto, and Roland Siegwart, “**Voxblox: Incremental 3D Euclidean Signed Distance Fields for On-Board MAV Planning**”, in _IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)_, 2017.
 <br>
+
  The planner is based on [Voxblox Planner](https://github.com/ethz-asl/mav_voxblox_planning) where it's extended to include semantic information for drivable space to constrain the planned path to valid on-road regions.
  
  Helen Oleynikova, Michael Burri, Zachary Taylor, Juan Nieto, Roland Siegwart, and Enric Galceran, “**Continuous-Time Trajectory Optimization for Online UAV Replanning**”. In _IEEE Int. Conf. on Intelligent Robots and Systems (IROS)_, October 2016.  
