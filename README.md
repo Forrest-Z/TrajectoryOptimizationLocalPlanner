@@ -40,6 +40,7 @@ The TSDF layers are saved at the path specified as an argument for both obstacle
 Usage: `generate_tsdf <scene> <output_obstacles_layer> <output_drivable_layer> <output_pointcloud>`  
 <br>  
 **scene** Scenario for mapping. Choose from the scenarios mentioned in the last step. 
+
 **output_obstacles_layer** Path to save the TSDF layer for driving zone  
 **output_drivable_layer** Path to save the TSDF layer for obstacles  
 **output_pointcloud** Path to save the colored point cloud as [XYZRGB]  in .txt file.
