@@ -1,6 +1,7 @@
 
 
 
+
 # Trajectory Optimization based Local Planner  
 3D Voxels and Semantics-based continuous-time Motion planner for Autonomous Driving. Uses 3D point cloud and segmentation to create Voxels with semantic and TSDF information, and generates Euclidean Sign Distance Fields from TSDF which is later used to optimize a polynomial based trajectory optimization problem. <br>  
 
@@ -55,7 +56,7 @@ Usage: `esdf_from_tsdf <input_layer> <output_layer> <category>`
 
 **input_layer** Path to load the TSDF layer for driving zone  
 **output_layer** Path to load the TSDF layer for obstacles  
-**category** Path to load the TSDF layer for obstacles  
+**category** Category for obstacles. Valid values [obstacles, free]  
 For example: `esdf_from_tsdf tsdf_obstacle_layer.layer esdf_obstacle_layer.layer obstacle`  
 
 Here the `esdf_from_tsdf` is the generated executable.  
@@ -80,14 +81,10 @@ After constructing ESDF maps for both obstacles and drivable space, we can use t
 
 Usage: `semantic_planner <start> <goal> <obstacles_layer_path> <drivable_layer_path> <pointcloud_path>`
 
-**start** Start position as 3D comma separated value
-
-**goal** Goal Positionn as 3D comma separated value
-
-**obstacles_layer_path** ESDF map path generated using `esdf_from_tsdf` program. Used to get distance to obstacles along the prospective paths .
-
-**drivable_layer_path** ESDF map path generated using `esdf_from_tsdf` program for free space. 
-
+**start** Start position as 3D comma separated value<br>
+**goal** Goal Positionn as 3D comma separated value<br>
+**obstacles_layer_path** ESDF map path generated using `esdf_from_tsdf` program. Used to get distance to obstacles along the prospective paths<br>
+**drivable_layer_path** ESDF map path generated using `esdf_from_tsdf` program for free space <br>
 **pointcloud_path** Pointcloud path over which the planned path is highlighted
 
 For example: `semantic_planner 0.0,0.0,0.0 5.0,5.,6.0 esdf_obstacle_layer.layer esdf_freer.layer pointcloud.txt` 
