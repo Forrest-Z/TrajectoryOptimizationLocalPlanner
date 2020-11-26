@@ -39,12 +39,9 @@ The TSDF layers are saved at the path specified as an argument for both obstacle
 <br>  
 Usage: `generate_tsdf <scene> <output_obstacles_layer> <output_drivable_layer> <output_pointcloud>`  
 <br>  
-**scene** Scenario for mapping. Choose from the scenarios mentioned in the last step.  
-<br>  
+**scene** Scenario for mapping. Choose from the scenarios mentioned in the last step. 
 **output_obstacles_layer** Path to save the TSDF layer for driving zone  
-<br>  
 **output_drivable_layer** Path to save the TSDF layer for obstacles  
-<br>  
 **output_pointcloud** Path to save the colored point cloud as [XYZRGB]  in .txt file.
 <br>  
 For example: `generate_tsdf tsdf_obstacles_layer.layer tsdf_free_layer.layer pointcloud.txt`  
@@ -56,11 +53,8 @@ the category of the ESDF map. i.e whether the maps is for obstacles or drivable 
 Usage: `esdf_from_tsdf <input_layer> <output_layer> <category>`  
 <br>  
 **input_layer** Path to load the TSDF layer for driving zone  
-<br>  
 **output_layer** Path to load the TSDF layer for obstacles  
-<br>  
 **category** Path to load the TSDF layer for obstacles  
-<br>  
 For example: `esdf_from_tsdf tsdf_obstacle_layer.layer esdf_obstacle_layer.layer obstacle`  
 <br>  
 Here the `esdf_from_tsdf` is the generated executable.  
@@ -92,9 +86,7 @@ A script to compile the code using CMake is provided in scripts directory.
 Scripts are also provided for each scenario to automate the complete process and save the results in output folder(contents described in the following section). The planned path (highlighted over scene) is saved as colored point cloud [XYZRGB format] in the output directory along with ESDF colored pointclouds for both obstacles and drivable zone .   
 <br>  
 `bash scripts/simple-scenario.sh`  
-<br>  
-`bash scripts/multi-scenario.sh`  
-<br>  
+`bash scripts/multi-scenario.sh`
 `bash scripts/slope-scenario.sh`  
   
 #### Output  
