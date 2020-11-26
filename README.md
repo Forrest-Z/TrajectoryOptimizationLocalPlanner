@@ -81,15 +81,19 @@ After constructing ESDF maps for both obstacles and drivable space, we can use t
 Usage: `semantic_planner <start> <goal> <obstacles_layer_path> <drivable_layer_path> <pointcloud_path>`
 
 **start** Start position as 3D comma separated value
+
 **goal** Goal Positionn as 3D comma separated value
+
 **obstacles_layer_path** ESDF map path generated using `esdf_from_tsdf` program. Used to get distance to obstacles along the prospective paths .
+
 **drivable_layer_path** ESDF map path generated using `esdf_from_tsdf` program for free space. 
+
 **pointcloud_path** Pointcloud path over which the planned path is highlighted
 
 For example: `semantic_planner 0.0,0.0,0.0 5.0,5.,6.0 esdf_obstacle_layer.layer esdf_freer.layer pointcloud.txt` 
 
 #### Output
-Saved the planned path as colored pointcloud [XYZRGB] with highlighted planned path at the location provided as argument.
+Saves the planned path as colored pointcloud [XYZRGB] with highlighted planned path at the location provided as argument with name **${pointcloud_name}_plan.txt**
   
 ## Scripts (For Linux)  
 Below you can find scripts to build and perform all the steps define in the above manual steps.  
