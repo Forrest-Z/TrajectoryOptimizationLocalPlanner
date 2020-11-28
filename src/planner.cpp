@@ -18,7 +18,7 @@ Eigen::Vector3d parseVector(std::string argument, char delim=',') {
         start = next + 1;
     } while ((next != std::string::npos));
 
-    return std::move(Eigen::Vector3d(position.data())); // return value optimization by casting into r value
+    return Eigen::Vector3d(position.data()); // return value optimization- R value
 }
 
 int main(int argc, char *argv[]) {
