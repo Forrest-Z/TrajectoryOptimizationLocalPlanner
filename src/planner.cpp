@@ -24,12 +24,12 @@ Eigen::Vector3d parseVector(std::string argument, char delim=',') {
 int main(int argc, char *argv[]) {
 
     if (argc < 6) {
-        std::cout<<"Usage: semantic_planner <start> <start> <obstacles_layer_path> <drivable_layer_path> <pointcloud_path>"<<std::endl;
+        std::cout<<"Usage: semantic_planner <start> <goal> <obstacles_layer_path> <drivable_layer_path> <pointcloud_path>"<<std::endl;
         std::cout<<"start - comma separated start position in 3D"<<std::endl;
         std::cout<<"goal - comma separated goal position in 3D"<<std::endl;
         std::cout<<"obstacles_layer_path - Path to the ESDF layer for obstacles"<<std::endl;
         std::cout<<"drivable_layer_path - Path to the ESDF layer for driving zone"<<std::endl;
-        std::cout<<"pointcloud_path -  Save planned path over the input pointcloud"<<std::endl;
+        std::cout<<"pointcloud_path -  Save planned path highlighted over this pointcloud"<<std::endl;
         return -1;
     }
 
