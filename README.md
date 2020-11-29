@@ -12,9 +12,11 @@ The map is built incrementally by fusing each set of pointcloud measurement into
 >Though the code is tested with the followed simulated scenes, the algorithm can be used independently, providing its possible to generate the colored point cloud with semantic labels indicating road and obstacles. One suggested apporach is to use RGB and Depth images and segment the RGB images to categorize points in the depth map.
 ### Simple scenario
  A simple scenario of a single cylindrical obstacle in the road center.  
+ <br>
  ![image](data/simplescenario01.png)  
 ### Multi-Obstacle scenario  
 A scenario with two obstacles placed along each other to evaluate planner turning through the obstacles.  
+<br>
  ![image](data/multiscenario00.png)  
 ### Sloped scenario  
 Added a slope to the simple scenario to evaluate planner on uneven sloped surfaces.  
@@ -122,7 +124,8 @@ A document describing the planner equations and derivations can be found as  **p
 ## Results  
 ### Simple Scenario  
 ![image](data/scenario-simple-plan.png)  
-### Multi Scenario  
+### Multi Scenario 
+<br>
 ![image](data/pc-scenario-multi00.png)  
 ### Slope Scenario  
 ![image](data/scenario-slope-plan00.png)  
