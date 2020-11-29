@@ -124,8 +124,7 @@ A document describing the planner equations and derivations can be found as  **p
 ## Results  
 ### Simple Scenario  
 ![image](data/scenario-simple-plan.png)  
-### Multi Scenario 
-<br>
+### Multi Scenario <br> 
 ![image](data/pc-scenario-multi00.png)  
 ### Slope Scenario  
 ![image](data/scenario-slope-plan00.png)  
