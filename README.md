@@ -3,15 +3,18 @@
 
 
 # Trajectory Optimization based Local Planner  
-3D Voxels and Semantics-based continuous-time Motion planner for Autonomous Driving. Uses 3D point cloud and segmentation to create Voxels with semantic and TSDF information, and generates Euclidean Sign Distance Fields from TSDF which is later used to optimize a polynomial based trajectory optimization problem. <br>  
+Semantics-based continuous-time motion planner for Autonomous Driving using grid based volumetric surface representation. Incrementally fuses sequence of segmented 3D point clouds into Voxels with semantic and TSDF information, and generates Euclidean Sign Distance Fields from TSDF which is used for path planning using a polynomial based trajectory optimization algorithm
 
 ## Simulated Scenes  
-Currently, few simulated scenarios are provided to emulate basic on road obstacle scenarios. <br>  
+A few sample simulated scenarios are provided to emulate basic on road obstacle scenarios. The scene is observed using 2D depth and colored virtual cameras(synced) which can be configured with various resolution and field of view and a pose(rotation and translation). To get colored 3D pointcloud from a given pose, the depth images are combined with colored images and projected into the 3D using the camera poses. <br>
+The map is built incrementally by fusing each set of pointcloud measurement into voxels using raycasting and calculating TSDF values for the respective voxels. 
+>**Note** <br>  
+>Though the code is tested with the followed simulated scenes, the algorithm can be used independently, providing its possible to generate the colored point cloud with semantic labels indicating road and obstacles. One suggested apporach is to use RGB and Depth images and segment the RGB images to categorize points in the depth map.
 ### Simple scenario
  A simple scenario of a single cylindrical obstacle in the road center.  
  ![image](data/simplescenario01.png)  
 ### Multi-Obstacle scenario  
-A scenario consisting of two obstacles placed next to each other to evaluate planner turning betwen obstacles.  
+A scenario with two obstacles placed along each other to evaluate planner turning through the obstacles.  
  ![image](data/multiscenario00.png)  
 ### Sloped scenario  
 Added a slope to the simple scenario to evaluate planner on uneven sloped surfaces.  
@@ -40,8 +43,7 @@ The TSDF layers are saved at the path specified as an argument for both obstacle
  
 Usage: `generate_tsdf <scene> <output_obstacles_layer> <output_drivable_layer> <output_pointcloud>`  
  
-**scene** Scenario for mapping. Choose from the scenarios mentioned in the last step. 
-
+**scene** Scenario for mapping. Choose from the scenarios mentioned in the last step. <br>
 **output_obstacles_layer** Path to save the TSDF layer for driving zone  
 **output_drivable_layer** Path to save the TSDF layer for obstacles  
 **output_pointcloud** Path to save the colored point cloud as [XYZRGB]  in .txt file.
@@ -62,7 +64,7 @@ For example: `esdf_from_tsdf tsdf_obstacle_layer.layer esdf_obstacle_layer.layer
 Here the `esdf_from_tsdf` is the generated executable.  
   
 #### ESDF Voxel Visualization  
-ESDF Voxels can be visualized as heat-map colored point cloud ranging colors from Red to Green indicating spectral variations in costs (not to be confused with the potential function which is calculated as squared and linear function of these values) for example for obstacles the Red areas are near obstacles or very near to obstacles, yellow near to obstacles and green is the free space and similarly following inverted color sequence for drivable free space in which case the road surface is color denoted as green while the area above or far from the road surface is indicated as yellow or red based on its distance from the road surface. practically, it ensures the path planned stays on the road surface and penalized the height from the road surface.  
+ESDF Voxels can be visualized as heat-map colored point cloud from Red to Green indicating spectral variations in costs in decreasing order (not to be confused with the potential function which is calculated as squared and linear function of these values) .  
 
 Usage: `visualzie_esdf_voxels <input_layer_path> <layer_category>` <br>  
 Where <input_layer_path> is the path of TSDF layer generated in the last step and <layer_category> indicates the semantic category of the map. i.e obstacles or free space.  
@@ -73,11 +75,10 @@ similarly for drivable zone use :
 `visualzie_esdf_voxels esdf_obstacle_layer.layer obstacles`  
 <br>  
 >**Note** <br>  
->A colored pointcloud (XYZRGB) with voxel centers would be saved as layer_name_pointcloud.txt (e.g esdf_obstacles_layer_pointcloud.txt) .  You may use Meshlab to view the point cloud. Select the XYZRGB formation when importing the file as mesh.
-  
+>A colored pointcloud (XYZRGB) with voxel centers is saved as layer_name_pointcloud.txt (e.g esdf_obstacles_layer_pointcloud.txt) which can be view directly in Meshlab.
   
 #### Planning  
-After constructing ESDF maps for both obstacles and drivable space, we can use the distance information in the map to calculate potential fields indicating collision and road surface deviation costs and solve the optimization problem to find the trajectory polynomial minimizing these costs.  
+After constructing ESDF maps for both obstacles and drivable space, the ESDF distance information is employed to calculate potential fields for collision and offroad penalties which allows to formulate the path planning as as optimization problem over space of polynomial trajectories.  
 
 Usage: `semantic_planner <start> <goal> <obstacles_layer_path> <drivable_layer_path> <pointcloud_path>`
 
@@ -90,15 +91,15 @@ Usage: `semantic_planner <start> <goal> <obstacles_layer_path> <drivable_layer_p
 For example: `semantic_planner 0.0,0.0,0.0 5.0,5.,6.0 esdf_obstacle_layer.layer esdf_freer.layer pointcloud.txt` 
 
 #### Output
-Saves the planned path as colored pointcloud [XYZRGB] with highlighted planned path at the location provided as argument with name **${pointcloud_name}_plan.txt**
+Saves the planned path as colored pointcloud [XYZRGB] with highlighted planned path at the path provided as argument with name **${pointcloud_name}_plan.txt**
   
 ## Scripts (For Linux)  
-Below you can find scripts to build and perform all the steps define in the above manual steps.  
+Below you can find scripts to build and perform all the steps defined in the above steps.  
 ### Code compilation  
 A script to compile the code using CMake is provided in scripts directory.  
 `bash scripts/compile.sh`  
 ### Execution  
-Scripts are also provided for each scenario to automate the complete process and save the results in output folder(contents described in the following section). The planned path (highlighted over scene) is saved as colored point cloud [XYZRGB format] in the output directory along with ESDF colored pointclouds for both obstacles and drivable zone .   
+Scripts are also provided for each scenario to automate the complete process and save the results in output folder(contents described in the following section). The planned path (highlighted over scene) is saved as colored point cloud [XYZRGB format] in the output directory along with ESDF colored pointclouds for both obstacles and drivable zone.   
   
 `bash scripts/simple-scenario.sh`  
 `bash scripts/multi-scenario.sh`
@@ -137,17 +138,17 @@ Sometimes planner still goes through the obstacles as a compromise between smoot
 **Fix** The weight for smoothness costs can be further tweaked to find a suitable compromise between the costs to prioritize collision-free paths over smooth paths. Another more practical approach is to do local replanning along with using a global planner.
 <br>  
 ### Noise + Large unknown areas, holes in TSDF/ESDF maps 
-The planner has difficulty planning through large holes and in unexplored areas specifically because the planner is conservative and all unknown space is considered an obstacle. The issue can be mitigated by having a certain limited region around the vehicle to be considered free so that the vehicle can start planning when having no initial knowledge of the surroundings. <br>
+The planner has difficulty planning through large holes and in unexplored areas specifically because is poised to behave conservatively thus considering unknown space an obstacle and non traversable. The issue can be mitigated by having a certain limited region around the vehicle to be considered free so that the vehicle can start planning when having no initial knowledge of the surroundings. <br>
 Another option can be to do an initial pass over the environment in an offline step to have an initial estimate of the map.
 ![image](data/scenario-fail-hole.png)
 
 ## Credits
-The mapping is based on implementation from [Voxblox](https://github.com/ethz-asl/voxblox), particularly the mapping is extended to include semantic segmentation. The detailed algorithm for constructing ESDF values directly from TSDF values is discussed in the following paper.
+The mapping implementation is based [Voxblox](https://github.com/ethz-asl/voxblox), particularly it is extended to include semantic segmentation for each voxel. The detailed algorithm for constructing ESDF values directly from TSDF values is discussed in the following paper.
 
 Helen Oleynikova, Zachary Taylor, Marius Fehr, Juan Nieto, and Roland Siegwart, “**Voxblox: Incremental 3D Euclidean Signed Distance Fields for On-Board MAV Planning**”, in _IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)_, 2017.
 <br>
 
- The planner is based on [Voxblox Planner](https://github.com/ethz-asl/mav_voxblox_planning) where it's extended to include semantic information for drivable space to constrain the planned path to valid on-road regions.
+For the planning, [Voxblox Planner](https://github.com/ethz-asl/mav_voxblox_planning) is extended to include semantic information for drivable space to constrain the planned path to valid on-road regions.
  
  Helen Oleynikova, Michael Burri, Zachary Taylor, Juan Nieto, Roland Siegwart, and Enric Galceran, “**Continuous-Time Trajectory Optimization for Online UAV Replanning**”. In _IEEE Int. Conf. on Intelligent Robots and Systems (IROS)_, October 2016.  
 [[pdf](http://helenol.github.io/publications/iros_2016_replanning.pdf) | [bibtex](http://helenol.github.io/publications/iros_2016_replanning_bibtex.txt) | [video](https://www.youtube.com/watch?v=-cm-HkTI8vw)]
