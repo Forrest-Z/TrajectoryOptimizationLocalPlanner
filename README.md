@@ -3,13 +3,13 @@
 
 
 # Trajectory Optimization based Local Planner  
-Semantics-based continuous-time motion planner for autonomous vehicles using grid based volumetric surface representation. Incrementally fuses sequence of segmented 3D point clouds into Voxels with semantic and TSDF information, and generates Euclidean Sign Distance Fields from TSDF which is employed for path planning by optimizing a Quadratic polynomial trajectory optimization problem.
+Semantics-based continuous-time motion planner for autonomous vehicles using grid-based volumetric surface representation. Incrementally fuses sequence of segmented 3D point clouds into Voxels with semantic and TSDF information, and generates Euclidean Sign Distance Fields from TSDF which is employed for path planning by optimizing a Quadratic polynomial trajectory optimization problem.
 
 ## Simulated Scenes  
-A few sample simulated scenarios are provided to emulate basic on road obstacle scenarios. The scene is observed using 2D depth and colored virtual cameras(synced) which can be configured with various resolution and field of view and a pose(rotation and translation). To get colored 3D pointcloud from a given pose, the depth images are combined with colored images and projected into the 3D using the camera poses. <br>
-The map is built incrementally by fusing each set of pointcloud measurement into voxels using raycasting and calculating TSDF values for the respective voxels. 
+A few sample simulated scenarios are provided to emulate basic on-road scenarios. The scene is observed using 2D depth and colored virtual cameras(synced) which can be configured with various resolution, field of view and a pose(rotation and translation). To get colored 3D pointcloud from a given pose, the depth images are matched with colored images and projected into the 3D space using the camera poses. <br>
+The map is built incrementally by fusing each set of pointcloud measurements into voxels using raycasting and calculating TSDF values for the respective voxels. 
 >**Note** <br>  
->Though the code is tested with the followed simulated scenes, the algorithm can be used independently, providing its possible to generate the colored point cloud with semantic labels indicating road and obstacles. One suggested apporach is to use RGB and Depth images and segment the RGB images to categorize points in the depth map.
+>Though the code is tested with the following simulated scenes, the algorithm can be used independently, providing its possible to generate the colored point cloud with semantic labels indicating road and obstacles. One suggested approach is to use RGB and Depth images and segment the RGB images to categorize points in the depth map.
 ### Simple scenario
  A simple scenario of a single cylindrical obstacle in the road center.  
  <br>
@@ -53,8 +53,7 @@ Usage: `generate_tsdf <scene> <output_obstacles_layer> <output_drivable_layer> <
 For example: `generate_tsdf tsdf_obstacles_layer.layer tsdf_free_layer.layer pointcloud.txt`  
 <br>  
 #### ESDF Generation from TSDF  
-Once we have a TSDF map for a scene, ESDF map can be generated from it and saved at the path provided. Along with the TSDF layer input, you need to specify   
-the category of the ESDF map. i.e whether the maps is for obstacles or drivable zone. For obstacles the road surface is masked (using the pointcloud semantic label) to prevent it to be considered it as an obstacle.  
+Once we have a TSDF map for a scene, an ESDF map can be generated from it and saved at the path provided. Along with the TSDF layer input, the semantic category of the ESDF map has to pe specified. i.e whether the maps are for obstacles or drivable zone. For obstacles the road surface is masked (using the pointcloud semantic label) to prevent it to be considered as an obstacle.  
  
 Usage: `esdf_from_tsdf <input_layer> <output_layer> <category>`  
 
@@ -66,10 +65,10 @@ For example: `esdf_from_tsdf tsdf_obstacle_layer.layer esdf_obstacle_layer.layer
 Here the `esdf_from_tsdf` is the generated executable.  
   
 #### ESDF Voxel Visualization  
-ESDF Voxels can be visualized as heat-map colored point cloud from Red to Green indicating spectral variations in costs in decreasing order (not to be confused with the potential function which is calculated as squared and linear function of these values) .  
+ESDF Voxels can be visualized as heat-map colored point cloud from Red to Green indicating spectral variations in costs in decreasing order (not to be confused with the potential function which is calculated as squared and linear function of these values).  
 
 Usage: `visualzie_esdf_voxels <input_layer_path> <layer_category>` <br>  
-Where <input_layer_path> is the path of TSDF layer generated in the last step and <layer_category> indicates the semantic category of the map. i.e obstacles or free space.  
+Where <input_layer_path> is the path of the TSDF layer generated in the last step and <layer_category> indicates the semantic category of the map. i.e obstacles or free space.  
  
 For example to save ESDF map for obstacles use : <br>  `visualzie_esdf_voxels esdf_free_layer.layer free` and  
 similarly for drivable zone use : 
@@ -80,7 +79,7 @@ similarly for drivable zone use :
 >A colored pointcloud (XYZRGB) with voxel centers is saved as layer_name_pointcloud.txt (e.g esdf_obstacles_layer_pointcloud.txt) which can be view directly in Meshlab.
   
 #### Planning  
-After constructing ESDF maps for both obstacles and drivable space, the ESDF distance information is employed to calculate potential fields for collision and offroad penalties which allows to formulate the path planning as as optimization problem over space of polynomial trajectories.  
+After constructing ESDF maps for both obstacles and drivable space, the ESDF distance information is employed to calculate potential fields for collision and offroad penalties which allows formulating the path planning as an optimization problem over the space of polynomial trajectories.  
 
 Usage: `semantic_planner <start> <goal> <obstacles_layer_path> <drivable_layer_path> <pointcloud_path>`
 
@@ -93,25 +92,24 @@ Usage: `semantic_planner <start> <goal> <obstacles_layer_path> <drivable_layer_p
 For example: `semantic_planner 0.0,0.0,0.0 5.0,5.,6.0 esdf_obstacle_layer.layer esdf_freer.layer pointcloud.txt` 
 
 #### Output
-Saves the planned path as colored pointcloud [XYZRGB] with highlighted planned path at the path provided as argument with name **${pointcloud_name}_plan.txt**
+Saves the planned path as colored pointcloud [XYZRGB] with highlighted planned path at the path provided as an argument with name **${pointcloud_name}_plan.txt**
   
 ## Scripts (For Linux)  
 Below you can find scripts to build and perform all the steps defined in the above steps.  
 ### Code compilation  
-A script to compile the code using CMake is provided in scripts directory.  
+A script to compile the code using CMake is provided in the scripts directory.  
 `bash scripts/compile.sh`  
 ### Execution  
-Scripts are also provided for each scenario to automate the complete process and save the results in output folder(contents described in the following section). The planned path (highlighted over scene) is saved as colored point cloud [XYZRGB format] in the output directory along with ESDF colored pointclouds for both obstacles and drivable zone.   
+A Script is provided to automate the aforementioned steps and save the results in the output folder(contents described in the following section). The planned path (highlighted over scene) is saved as a colored pointcloud [XYZRGB format] in the output directory along with ESDF colored pointclouds for both obstacles and drivable zone.   
   
-`bash scripts/simple-scenario.sh`  
-`bash scripts/multi-scenario.sh`
-`bash scripts/slope-scenario.sh`  
+`bash scripts/run_scenario.sh <scenario> ` <br>
+The valid values for the scenario are simple, multi, slope. 
   
 #### Output  
 For each scenario, the following output files are generated.  
   
 - output/pointcloud_scenario.txt where scenario can be [simple, multi, slope]  
-	- Scene as colored pointcloud
+   - Scene as colored pointcloud
 - output/esdf_obstacles_layer_pointcloud.txt  
   - ESDF layer for obstacles saved as a colored heatmap  point cloud  
 - output/esdf_free_layer_pointcloud.txt  
@@ -140,12 +138,12 @@ Sometimes planner still goes through the obstacles as a compromise between smoot
 **Fix** The weight for smoothness costs can be further tweaked to find a suitable compromise between the costs to prioritize collision-free paths over smooth paths. Another more practical approach is to do local replanning along with using a global planner.
 <br>  
 ### Noise + Large unknown areas, holes in TSDF/ESDF maps 
-The planner has difficulty planning through large holes and in unexplored areas specifically because is poised to behave conservatively thus considering unknown space an obstacle and non traversable. The issue can be mitigated by having a certain limited region around the vehicle to be considered free so that the vehicle can start planning when having no initial knowledge of the surroundings. <br>
+The planner has difficulty planning through large holes and in unexplored areas specifically because is poised to behave conservatively thus considering unknown space an obstacle and non-traversable. The issue can be mitigated by having a certain limited region around the vehicle to be considered free so that the vehicle can start planning when having no initial knowledge of the surroundings. <br>
 Another option can be to do an initial pass over the environment in an offline step to have an initial estimate of the map.
 ![image](data/scenario-fail-hole.png)
 
 ## Credits
-The mapping implementation is based [Voxblox](https://github.com/ethz-asl/voxblox), particularly it is extended to include semantic segmentation for each voxel. The detailed algorithm for constructing ESDF values directly from TSDF values is discussed in the following paper.
+The mapping implementation is based on [Voxblox](https://github.com/ethz-asl/voxblox), particularly it is extended to include semantic segmentation for each voxel. The detailed algorithm for constructing ESDF values directly from TSDF values is discussed in the following paper.
 
 Helen Oleynikova, Zachary Taylor, Marius Fehr, Juan Nieto, and Roland Siegwart, “**Voxblox: Incremental 3D Euclidean Signed Distance Fields for On-Board MAV Planning**”, in _IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)_, 2017.
 <br>
