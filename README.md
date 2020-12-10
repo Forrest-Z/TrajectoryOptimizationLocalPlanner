@@ -3,7 +3,7 @@
 
 
 # Trajectory Optimization based Local Planner  
-Semantics-based continuous-time motion planner for autonomous vehicles using grid-based volumetric surface representation. Incrementally fuses sequence of segmented 3D point clouds into Voxels with semantic and TSDF information, and generates Euclidean Sign Distance Fields from TSDF which is employed for path planning by optimizing a Quadratic polynomial trajectory optimization problem.
+Semantics-based continuous-time motion planner for autonomous vehicles using grid-based volumetric surface mapping. Semantically segments the Pointcloud into drivable and non drivable areas and fuses segmented 3D point clouds into Voxels with semantic and TSDF information, and generates (ESDF) Euclidean Sign Distance Function from TSDF for path planning by optimizing a Quadratic polynomial trajectory optimization problem.
 
 ## Simulated Scenes  
 A few sample simulated scenarios are provided to emulate basic on-road scenarios. The scene is observed using 2D depth and colored virtual cameras(synced) which can be configured with various resolution, field of view and a pose(rotation and translation). To get colored 3D pointcloud from a given pose, the depth images are matched with colored images and projected into the 3D space using the camera poses. <br>
