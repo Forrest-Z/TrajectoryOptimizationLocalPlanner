@@ -1,12 +1,9 @@
 
-
-
-
 # Trajectory Optimization based Local Planner  
 Semantics-based continuous-time motion planner for autonomous vehicles using grid-based volumetric surface mapping. Semantically segments the Pointcloud into drivable and non drivable areas and fuses segmented 3D point clouds into TSDF Voxels, and directly generates (ESDF) Euclidean Sign Distance Function values from TSDF which can be employed for collison costs. The path is represented as multi segment 3D polynomial function of time with its derivatives indicating position, velopcity and acceleration along the trajectpry length and is formulated as Quadratic optimization problem minimizing collision and path smoothness costs (minimizig position /velocity or acceleration over the segment length). 
 
 ## Simulated Scenes  
-A few sample simulated scenarios are provided to emulate basic on-road scenarios. The scene is observed using 2D depth and colored virtual cameras(synced) which can be configured with various resolution, field of view and a pose(rotation and translation). To get colored 3D pointcloud from a given pose, the depth images are matched with colored images and projected into the 3D space using the camera poses. <br>
+The planner is evaluated on a simulated scene emulating basic on-road scenarios. The scene is geometrically represented as primitive 3D shapes and is observed using virtual cameras. Colored 3D pointcloud can be calcualted by projecting depth/RGB images into the 3D space using the camera poses. <br>
 The map is built incrementally by fusing each set of pointcloud measurements into voxels using raycasting and calculating TSDF values for the respective voxels. 
 >**Note** <br>  
 >Though the code is tested with the following simulated scenes, the algorithm can be used independently, providing its possible to generate the colored point cloud with semantic labels indicating road and obstacles. One suggested approach is to use RGB and Depth images and segment the RGB images to categorize points in the depth map.
